@@ -16,6 +16,9 @@
 
 char ssid[] = "ALARM_BUDDY";
 int WIFI_TIMEOUT_LENGTH = 10;
+IPAddress local_IP(192,168,1,184);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
 File webpage;
 
 
@@ -34,6 +37,11 @@ void setup() {
     webpage = SPIFFS.open("/index.html");
     if (!webpage) {
         Serial.println("Could not locate index.html file...exiting");
+        return;
+    }
+    
+    if(!WiFi.softAPConfig(local_IP, gateway, subnet)) {
+        Serial.println("Failed to configure static network...exiting");
         return;
     }
 
