@@ -33,12 +33,6 @@ void setup() {
     } else {
         Serial.println("SPIFFS filesystem successfully mounted!");
     }
-
-    webpage = SPIFFS.open("/index.html");
-    if (!webpage) {
-        Serial.println("Could not locate index.html file...exiting");
-        return;
-    }
     
     if(!WiFi.softAPConfig(local_IP, gateway, subnet)) {
         Serial.println("Failed to configure static network...exiting");
@@ -52,7 +46,13 @@ void setup() {
 
     server.begin();
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("root was accessed");
         request->send(SPIFFS, "/index.html", "text/html");
+    });
+    server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("on was accessed");
+        request->send(SPIFFS, "/home.html", "text/html");
+
     });
  
     server.begin();
