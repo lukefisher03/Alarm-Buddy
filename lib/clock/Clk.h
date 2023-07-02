@@ -13,103 +13,34 @@ class Clk{
         int* selector;
     public:
         // simple constructor
-        clk(){
-            hours = 11;
-            minutes = 59;
-            seconds = 30;
-            selection_int = 0;
-            meridiem = "A.M.";
-            meridiem_set = 0;
-            increment_flag = 1;
-            selector = modes[selection_int];
-        };
+        Clk();
         
         // main function to be run during loop() in main.cpp
-        void tick(){
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            seconds++;
-            shift();
-            update_time();
-        };
-
+        void tick();
         // mutator function used to keep each time segment in their respective ranges
-        void shift(){
-            if(seconds == 60){
-                seconds = 0;
-                minutes++;
-            }
-            if(minutes == 60){
-                minutes = 0;
-                hours++;
-            }
-            if(hours == 12 && minutes == 0 && seconds == 0){
-                if(meridiem_set == 0){
-                    meridiem = "P.M";
-                    meridiem_set = 1;
-                }
-                else{ 
-                    meridiem = "A.M.";
-                    meridiem_set = 0;
-                }
-            }
-            if(hours == 13){
-                hours = 1;
-            }
-        };
+        void shift();
 
         // This mutator function updates the time string
-        void update_time(){
-            std::string h_string = std::to_string(hours);
-            std::string m_string = std::to_string(minutes);
-            std::string s_string = std::to_string(seconds);
-            time = h_string + ":" + m_string + ":" + s_string + " " + meridiem;
-        }
+        void update_time();
 
         // This mutator function will be triggered by a button push, change which time segment is
         // being incremented (hours, minutes, or seconds), returns the address the selector is pointing to
-        int* change_selector(){
-            if (selection_int == 2){
-                selection_int = 0;
-            }
-            else{
-                selection_int++;
-            }
-            selector = modes[selection_int];
-            return selector;
-        }; 
+        int* change_selector();
 
         //This mutator function will be button triggered, increment selected time segment
         // retuns the current time data segment being edited
-        int initiate_increment(){
-            *selector = *selector + increment_flag;
-            return *selector;
-        };
+        int initiate_increment();
 
         // This  mutator function will be button triggered and set increment type to increase or decrease,
         // returns increment flag
-        int set_increment(){
-            increment_flag = increment_flag * -1;
-            if (increment_flag == 1){
-                std::cout << "Clock will increase values set";
-            }
-            else{
-                std::cout << "Clock will decrease values selected";
-            }
-            return increment_flag;
-        };
+        int set_increment();
 
         // accessor fucntion returns the current time string
-        std::string return_time(){
-            return time;
-        };
+        std::string return_time();
 
         // accessor function returns the current selector address
-        int* return_selector(){
-            return selector;
-        };
+        int* return_selector();
 
         // accessor function , returns which time division is being edited
-        int return_mode(){
-            return *modes[selection_int];
-        };
+        int return_mode();
 };

@@ -5,5 +5,5 @@
 using namespace std;
 
 int main(){
-    clk test;
+    Clk test;
 };
