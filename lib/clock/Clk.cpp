@@ -94,9 +94,13 @@ int Clk::SetIncrement(){
     return increment_flag_;
 };
 
-std::string Clk::get_time(){
+std::string Clk::get_time_str(){
     // accessor fucntion returns the current time string
     return time_str_;
+};
+
+const char * Clk::get_time_c_str() {
+    return time_str_.c_str();
 };
 
 int* Clk::get_selector(){
