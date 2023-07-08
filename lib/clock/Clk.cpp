@@ -1,25 +1,18 @@
 #include "Clk.h"
-
 #include <stdlib.h>
 #include <fstream>
 #include <chrono>
 #include <thread>
 
-// simple constructor
-Clk::Clk(){
-    hours_ = 11;
-    minutes_ = 59;
-    seconds_ = 30;
-    selection_int_ = 0;
-    meridiem_ = "A.M.";
-    meridiem_set_ = 0;
-    increment_flag_ = 1;
-    selector_ = modes_[selection_int_];
-};
-        
+
+Clk::Clk()
+    : hours_(11), minutes_(59), seconds_(30), increment_flag_(1), selection_int_(0), meridiem_set_(0), meridiem_("A.M."), selector_(modes_[selection_int_]) {}
+
+Clk::Clk(int h, int m, int s)  
+    : hours_(h), minutes_(m), seconds_(s), increment_flag_(1), selection_int_(0), meridiem_set_(0), meridiem_("A.M."), selector_(modes_[selection_int_]) {}
+
 void Clk::Tick(){
     // main function to be run during loop() in main.cpp
-
     std::this_thread::sleep_for(std::chrono::seconds(1));
     seconds_++;
     Shift();
@@ -28,15 +21,17 @@ void Clk::Tick(){
 
 void Clk::Shift(){
     // mutator function used to keep each time segment in their respective ranges
-
-    if(seconds_ == 60){
+    if(seconds_ >= 60){
         seconds_ = 0;
         minutes_++;
     }
-    if(minutes_ == 60){
+  
+    if(minutes_ >= 60){
         minutes_ = 0;
         hours_++;
+      
     }
+  
     if(hours_ == 12 && minutes_ == 0 && seconds_ == 0){
         if(meridiem_set_ == 0){
             meridiem_ = "P.M";
@@ -52,13 +47,13 @@ void Clk::Shift(){
     }
 };
 
+
 void Clk::UpdateTime(){
     // This mutator function updates the time string
-
-    std::string h_string = std::to_string(hours_);
-    std::string m_string = std::to_string(minutes_);
-    std::string s_string = std::to_string(seconds_);
-    time_str_ = h_string + ":" + m_string + ":" + s_string + " " + meridiem_;
+    std::string h_str = std::to_string(hours);
+    std::string m_str = std::to_string(minutes);
+    std::string s_str = std::to_string(seconds);
+    time_str_ = h_str + ":" + m_str + ":" + s_str + " " + meridiem_;
 }
 
 int* Clk::ChangeSelector(){
@@ -70,6 +65,7 @@ int* Clk::ChangeSelector(){
     } else {
         selection_int_++;
     }
+    
     selector_ = modes_[selection_int_];
     
     return selector_;
