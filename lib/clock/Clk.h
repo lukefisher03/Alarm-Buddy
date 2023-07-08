@@ -35,11 +35,11 @@ class Clk{
         int SetIncrement();
 
         // accessor fucntion returns the current time string
-        std::string GetTime();
+        std::string get_time();
 
         // accessor function returns the current selector address
-        int* GetSelector();
+        int* get_selector();
 
         // accessor function , returns which time division is being edited
-        int GetMode();
+        int get_mode();
 };

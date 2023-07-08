@@ -6,7 +6,7 @@ int main(){
     while (true)
     {
         test.Tick();
-        printf(test.GetTime().c_str());
+        printf(test.get_time().c_str());
         printf("\n");
     }
     

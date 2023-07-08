@@ -98,17 +98,17 @@ int Clk::SetIncrement(){
     return increment_flag_;
 };
 
-std::string Clk::GetTime(){
+std::string Clk::get_time(){
     // accessor fucntion returns the current time string
     return time_str_;
 };
 
-int* Clk::GetSelector(){
+int* Clk::get_selector(){
     // accessor function returns the current selector address
     return selector_;
 };
 
-int Clk::GetMode(){
+int Clk::get_mode(){
     // accesssor function , returns which time division is being edited
     return *modes_[selection_int_];
 };
