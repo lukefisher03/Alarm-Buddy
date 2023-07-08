@@ -50,9 +50,9 @@ void Clk::Shift(){
 
 void Clk::UpdateTime(){
     // This mutator function updates the time string
-    std::string h_str = std::to_string(hours);
-    std::string m_str = std::to_string(minutes);
-    std::string s_str = std::to_string(seconds);
+    std::string h_str = std::to_string(hours_);
+    std::string m_str = std::to_string(minutes_);
+    std::string s_str = std::to_string(seconds_);
     time_str_ = h_str + ":" + m_str + ":" + s_str + " " + meridiem_;
 }
 
