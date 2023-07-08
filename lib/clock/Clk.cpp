@@ -16,7 +16,12 @@ void Clk::Tick(){
     std::this_thread::sleep_for(std::chrono::seconds(1));
     seconds_++;
     Shift();
-    UpdateTime();
+    
+    std::string h_str = std::to_string(hours_);
+    std::string m_str = std::to_string(minutes_);
+    std::string s_str = std::to_string(seconds_);
+
+    time_str_ = h_str + ":" + m_str + ":" + s_str + " " + meridiem_;
 };
 
 void Clk::Shift(){
@@ -47,14 +52,30 @@ void Clk::Shift(){
     }
 };
 
+bool Clk::SetTime(int hours, int minutes, int seconds){
+    // This mutator function updates the time
+    if (!ValidateTime(hours, minutes, seconds)) {
+        return false;
+    }
+    
+    hours_ = hours;
+    minutes_ = minutes;
+    seconds_ = seconds;
 
-void Clk::UpdateTime(){
-    // This mutator function updates the time string
-    std::string h_str = std::to_string(hours_);
-    std::string m_str = std::to_string(minutes_);
-    std::string s_str = std::to_string(seconds_);
-    time_str_ = h_str + ":" + m_str + ":" + s_str + " " + meridiem_;
+    return true;
 }
+
+bool Clk::ValidateTime(int hours, int minutes, int seconds) {
+    if (hours > 12 || minutes > 60 || seconds > 60) {
+        return false;
+    }
+
+    if (hours < 1 || minutes < 0 || seconds < 0) {
+        return false;
+    }
+
+    return true;
+};
 
 int* Clk::ChangeSelector(){
     // This mutator function will be triggered by a button push, change which time segment is

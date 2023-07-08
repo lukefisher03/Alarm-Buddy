@@ -19,7 +19,8 @@ class Clk{
         Clk(int h, int m, int s);
         void Tick();
         void Shift();
-        void UpdateTime();
+        bool SetTime(int, int, int);
+        bool ValidateTime(int, int, int);
         int* ChangeSelector();
         int InitiateIncrement();
         int SetIncrement();

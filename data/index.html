@@ -8,10 +8,23 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
+
+        .time-set {
+            width:50px;
+        }
     </style>
 </head>
 <body>
     <h1>Alarm Buddy</h1>
-    <p>This is a test of serving a static webpage using the ESP32 board</p>
+    <p>Welcome to the Alarm Buddy configuration home page</p>
+    
+    <form action="/get">
+        <h4>Set time</h4>
+        <label for="time-set">Hours : Minutes : Seconds </label>
+        <input type="text" name="time-set-hours" class="time-set"> :
+        <input type="text" name="time-set-minutes" class="time-set"> :
+        <input type="text" name="time-set-seconds" class="time-set">
+        <input type="submit">
+    </form>
 </body>
 </html>
