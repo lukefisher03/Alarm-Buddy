@@ -1,9 +1,8 @@
+#pragma once
+
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <fstream>
-#include <chrono>
-#include <thread>
+
 
 
 #ifndef CLK_H
@@ -11,22 +10,22 @@
 
 class Clk{
     private:
-        int hours, minutes, seconds, increment_flag, selection_int, meridiem_set;
-        std::string time, meridiem;
-        int* modes [3] = { &hours, &minutes, &seconds};
-        int* selector;
+        int hours_, minutes_, seconds_, increment_flag_, selection_int_, meridiem_set_;
+        std::string time_str_, meridiem_;
+        int* modes_ [3] = { &hours_, &minutes_, &seconds_};
+        int* selector_;
     public:
         Clk();
         Clk(int h, int m, int s);
-        void tick();
-        void shift();
-        void update_time();
-        int* change_selector();
-        int initiate_increment();
-        int set_increment();
-        std::string return_time();
-        int* return_selector();
-        int return_mode();
+        void Tick();
+        void Shift();
+        void UpdateTime();
+        int* ChangeSelector();
+        int InitiateIncrement();
+        int SetIncrement();
+        std::string get_time();
+        int* get_selector();
+        int get_mode();
 };
 
 #endif
