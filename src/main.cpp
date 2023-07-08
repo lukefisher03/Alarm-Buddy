@@ -3,7 +3,6 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 
-
 #include "../lib/clock/Clk.h"
 
 #define FORMAT_SPIFFS_IF_FAILED true
@@ -21,8 +20,6 @@ IPAddress local_IP(192,168,1,184);
 IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 Clk main_clock = Clk(11,24,30);
-
-
 
 AsyncWebServer server(80);
 
@@ -87,8 +84,6 @@ void setup() {
             Serial.println(response_msg);
 
         }
-
-        
     });
  
     server.begin();
