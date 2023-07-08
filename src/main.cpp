@@ -3,6 +3,9 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 
+
+#include "../lib/clock/Clk.h"
+
 #define FORMAT_SPIFFS_IF_FAILED true
 #define OPEN_NETWORK true
 
@@ -12,14 +15,13 @@
     char passwd[] = "password";
 #endif
 
-
-
 char ssid[] = "ALARM_BUDDY";
 int WIFI_TIMEOUT_LENGTH = 10;
 IPAddress local_IP(192,168,1,184);
 IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 File webpage;
+Clk main_clock;
 
 
 AsyncWebServer server(80);
@@ -60,5 +62,6 @@ void setup() {
 }
 
 void loop() {
-    
+    main_clock.Tick();
+    Serial.println(main_clock.get_time_c_str());
 }
