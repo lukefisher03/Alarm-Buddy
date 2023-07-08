@@ -1,9 +1,13 @@
 #include "clk.h"
-#include <iostream>
-
-
-using namespace std;
 
 int main(){
     Clk test;
+
+    while (true)
+    {
+        test.Tick();
+        printf(test.GetTime().c_str());
+        printf("\n");
+    }
+    
 };

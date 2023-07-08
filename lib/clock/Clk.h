@@ -1,46 +1,45 @@
+#pragma once
+
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <fstream>
-#include <chrono>
-#include <thread>
+
 
 class Clk{
     private:
-        int hours, minutes, seconds, increment_flag, selection_int, meridiem_set;
-        std::string time, meridiem;
-        int* modes [3] = { &hours, &minutes, &seconds};
-        int* selector;
+        int hours_, minutes_, seconds_, increment_flag_, selection_int_, meridiem_set_;
+        std::string time_str_, meridiem_;
+        int* modes_ [3] = { &hours_, &minutes_, &seconds_};
+        int* selector_;
     public:
         // simple constructor
         Clk();
         
         // main function to be run during loop() in main.cpp
-        void tick();
+        void Tick();
         // mutator function used to keep each time segment in their respective ranges
-        void shift();
+        void Shift();
 
         // This mutator function updates the time string
-        void update_time();
+        void UpdateTime();
 
         // This mutator function will be triggered by a button push, change which time segment is
         // being incremented (hours, minutes, or seconds), returns the address the selector is pointing to
-        int* change_selector();
+        int* ChangeSelector();
 
         //This mutator function will be button triggered, increment selected time segment
         // retuns the current time data segment being edited
-        int initiate_increment();
+        int InitiateIncrement();
 
         // This  mutator function will be button triggered and set increment type to increase or decrease,
         // returns increment flag
-        int set_increment();
+        int SetIncrement();
 
         // accessor fucntion returns the current time string
-        std::string return_time();
+        std::string GetTime();
 
         // accessor function returns the current selector address
-        int* return_selector();
+        int* GetSelector();
 
         // accessor function , returns which time division is being edited
-        int return_mode();
+        int GetMode();
 };

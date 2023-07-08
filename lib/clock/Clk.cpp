@@ -1,109 +1,114 @@
 #include "Clk.h"
 
-#include <iostream>
-#include <string>
 #include <stdlib.h>
 #include <fstream>
 #include <chrono>
 #include <thread>
 
-        // simple constructor
+// simple constructor
 Clk::Clk(){
-    hours = 11;
-    minutes = 59;
-    seconds = 30;
-    selection_int = 0;
-    meridiem = "A.M.";
-    meridiem_set = 0;
-    increment_flag = 1;
-    selector = modes[selection_int];
+    hours_ = 11;
+    minutes_ = 59;
+    seconds_ = 30;
+    selection_int_ = 0;
+    meridiem_ = "A.M.";
+    meridiem_set_ = 0;
+    increment_flag_ = 1;
+    selector_ = modes_[selection_int_];
 };
         
-        // main function to be run during loop() in main.cpp
-void Clk::tick(){
+void Clk::Tick(){
+    // main function to be run during loop() in main.cpp
+
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    seconds++;
-    shift();
-    update_time();
+    seconds_++;
+    Shift();
+    UpdateTime();
 };
 
-        // mutator function used to keep each time segment in their respective ranges
-void Clk::shift(){
-    if(seconds == 60){
-        seconds = 0;
-        minutes++;
+void Clk::Shift(){
+    // mutator function used to keep each time segment in their respective ranges
+
+    if(seconds_ == 60){
+        seconds_ = 0;
+        minutes_++;
     }
-    if(minutes == 60){
-        minutes = 0;
-        hours++;
+    if(minutes_ == 60){
+        minutes_ = 0;
+        hours_++;
     }
-    if(hours == 12 && minutes == 0 && seconds == 0){
-        if(meridiem_set == 0){
-            meridiem = "P.M";
-            meridiem_set = 1;
+    if(hours_ == 12 && minutes_ == 0 && seconds_ == 0){
+        if(meridiem_set_ == 0){
+            meridiem_ = "P.M";
+            meridiem_set_ = 1;
         }
         else{ 
-            meridiem = "A.M.";
-            meridiem_set = 0;
+            meridiem_ = "A.M.";
+            meridiem_set_ = 0;
         }
     }
-    if(hours == 13){
-        hours = 1;
+    if(hours_ == 13){
+        hours_ = 1;
     }
 };
 
-        // This mutator function updates the time string
-void Clk::update_time(){
-    std::string h_string = std::to_string(hours);
-    std::string m_string = std::to_string(minutes);
-    std::string s_string = std::to_string(seconds);
-    time = h_string + ":" + m_string + ":" + s_string + " " + meridiem;
+void Clk::UpdateTime(){
+    // This mutator function updates the time string
+
+    std::string h_string = std::to_string(hours_);
+    std::string m_string = std::to_string(minutes_);
+    std::string s_string = std::to_string(seconds_);
+    time_str_ = h_string + ":" + m_string + ":" + s_string + " " + meridiem_;
 }
 
-// This mutator function will be triggered by a button push, change which time segment is
-// being incremented (hours, minutes, or seconds), returns the address the selector is pointing to
-int* Clk::change_selector(){
-    if (selection_int == 2){
-        selection_int = 0;
+int* Clk::ChangeSelector(){
+    // This mutator function will be triggered by a button push, change which time segment is
+    // being incremented (hours, minutes, or seconds), returns the address the selector is pointing to
+
+    if (selector_ == &seconds_) {
+        selection_int_ = 0;
+    } else {
+        selection_int_++;
     }
-    else{
-        selection_int++;
-    }
-    selector = modes[selection_int];
-    return selector;
+    selector_ = modes_[selection_int_];
+    
+    return selector_;
 }; 
 
-//This mutator function will be button triggered, increment selected time segment
-// retuns the current time data segment being edited
-int Clk::initiate_increment(){
-    *selector = *selector + increment_flag;
-    return *selector;
+int Clk::InitiateIncrement(){
+    //This mutator function will be button triggered, increment selected time segment 
+    //retuns the current time data segment being edited
+
+    *selector_ = *selector_ + increment_flag_;
+    return *selector_;
 };
 
-// This  mutator function will be button triggered and set increment type to increase or decrease,
-// returns increment flag
-int Clk::set_increment(){
-    increment_flag = increment_flag * -1;
-    if (increment_flag == 1){
+int Clk::SetIncrement(){
+    //This  mutator function will be button triggered and set increment type to increase or decrease,
+    //returns increment flag
+      
+    increment_flag_ = increment_flag_ * -1;
+    if (increment_flag_ == 1){
         std::cout << "Clock will increase values set";
     }
     else{
         std::cout << "Clock will decrease values selected";
     }
-    return increment_flag;
+
+    return increment_flag_;
 };
 
-// accessor fucntion returns the current time string
-std::string Clk::return_time(){
-    return time;
+std::string Clk::GetTime(){
+    // accessor fucntion returns the current time string
+    return time_str_;
 };
 
-// accessor function returns the current selector address
-int* Clk::return_selector(){
-    return selector;
+int* Clk::GetSelector(){
+    // accessor function returns the current selector address
+    return selector_;
 };
 
-// accesssor function , returns which time division is being edited
-int Clk::return_mode(){
-    return *modes[selection_int];
+int Clk::GetMode(){
+    // accesssor function , returns which time division is being edited
+    return *modes_[selection_int_];
 };
