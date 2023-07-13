@@ -44,11 +44,17 @@ void setup() {
     Serial.print(server_ip);
 
     server.begin();
+
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println("root was accessed");
         request->send(SPIFFS, "/index.html", "text/html");
     });
 
+    server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Serial.println("Sending script.js to client...");
+        request->send(SPIFFS, "/script.js", "text/javascript");
+    });
+    
     server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
         String hours_str;
         String minutes_str;
