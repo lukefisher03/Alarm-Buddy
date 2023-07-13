@@ -1,97 +1,101 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <SPIFFS.h>
+#include <ESPAsyncWebServer.h>
 
-char ssid[] = "SSID";
-char passwd[] = "PASSWORD";
+#include "../lib/clock/Clk.h"
+
+#define FORMAT_SPIFFS_IF_FAILED true
+#define OPEN_NETWORK true
+
+#if OPEN_NETWORK == true
+    const char* passwd = NULL;
+#else
+    char passwd[] = "password";
+#endif
+
+char ssid[] = "ALARM_BUDDY";
 int WIFI_TIMEOUT_LENGTH = 10;
-WiFiServer server(80);
+IPAddress local_IP(192,168,1,184);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+Clk main_clock = Clk(11,24,30);
 
-bool wifiConnect(char [], char []);
+AsyncWebServer server(80);
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  bool wifi_status = wifiConnect(ssid, passwd);
+void setup() { 
+    Serial.begin(9600);
+    
+    if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+        Serial.println("SPIFFS filesystem failed to mount! exiting...");
+        return;
+    } else {
+        Serial.println("SPIFFS filesystem successfully mounted!");
+    }
+    
+    if(!WiFi.softAPConfig(local_IP, gateway, subnet)) {
+        Serial.println("Failed to configure static network...exiting");
+        return;
+    }
 
-  if(wifi_status) {
-    Serial.println("Starting web server...");
+    WiFi.softAP(ssid,passwd,1, 0, 1);   // Create soft access point that only allows one users at a time.
+    IPAddress server_ip = WiFi.softAPIP();
+    Serial.println("WiFi connection created, serving at: ");
+    Serial.print(server_ip);
+
     server.begin();
-    IPAddress ip = WiFi.localIP();
-    Serial.println("Web server started at: ");
-    Serial.print(ip);
-  } else {
-    Serial.println("Web server not started, not connected to the internet!");
-  }
 
-  Serial.println();
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println("root was accessed");
+        request->send(SPIFFS, "/index.html", "text/html");
+    });
+
+    server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Serial.println("Sending script.js to client...");
+        request->send(SPIFFS, "/script.js", "text/javascript");
+    });
+    
+    server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
+        String hours_str;
+        String minutes_str;
+        String seconds_str;
+
+        String response_msg;
+
+        Serial.println("REQEST RECIEVED ON /get ROUTE!");
+
+        if (request->hasParam("time-set-hours")) {
+            hours_str = request->getParam("time-set-hours")->value();
+        }
+
+        if (request->hasParam("time-set-minutes")) {
+            minutes_str = request->getParam("time-set-minutes")->value();
+        }
+
+        if (request->hasParam("time-set-seconds")) {
+            seconds_str = request->getParam("time-set-seconds")->value();
+        }
+
+        int hours = hours_str.toInt();
+        int minutes = minutes_str.toInt();
+        int seconds = seconds_str.toInt();
+
+        if (main_clock.SetTime(hours, minutes, seconds)) {
+            response_msg = "Time was set to " + hours_str + " : " + minutes_str + " : " + seconds_str;
+            Serial.println(response_msg);
+            request->send(200, "text/plain", response_msg);
+        } else {
+            response_msg = "400 Bad Request\nTime was not set due to invalid request data";
+            request->send(400, "text/plain", response_msg);
+            Serial.println(response_msg);
+
+        }
+    });
+ 
+    server.begin();
 }
 
 void loop() {
-  WiFiClient client = server.available();
-  if(client) {
-    Serial.println("CLIENT CONNECTED!");
-
-    bool currentLineIsBlank = true;
-
-    while(client.connected()) {
-      if(client.available()) {
-        char c = client.read();
-        Serial.write(c);
-
-        if (c == '\n' && currentLineIsBlank) {
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: text/html");
-          client.println("Connection: close");  // the connection will be closed after completion of the response
-          client.println("Refresh: 5");  // refresh the page automatically every 5 sec
-          client.println();
-          client.println("<!DOCTYPE HTML>");
-          client.println("<html>");
-          client.println("<h1>Welcome to the esp32 webpage</h1>");
-          client.println("</html>");
-
-        }
-
-        if (c == '\n') {
-          currentLineIsBlank = true;
-        } else if (c != '\r') {
-          currentLineIsBlank = false;
-        }        
-
-      }
-    }
-
-    delay(1);
-    client.stop();
-    Serial.println("Client connection completed!");
-  }
+    main_clock.Tick();
+    Serial.println(main_clock.get_time_c_str());
 }
-
-bool wifiConnect(char ssid[], char passwd[]) {
-  /***
-   * Connect to a wifi network
-   * 
-   * Params: ssid, passwd
-   * Returns: Boolean indicating connection status
-  */
-  bool connected = false;
-  Serial.println("Attempting to connect to network: ");
-  Serial.print(ssid);
-
-  WiFi.begin(ssid, passwd);
-  for(int i = 0; i < WIFI_TIMEOUT_LENGTH; i++) {
-    delay(1000);
-    Serial.println("Connection in progress...");
-    Serial.print(i);
-    Serial.print(" seconds passed");
-    Serial.println();
-    if(WiFi.status() == WL_CONNECTED) {
-      connected = true;
-      break;
-    }
-  }
-
-  (connected == true) ? Serial.println("Connection successful!") : Serial.println("Connection failed!");
-
-  return connected;
-}
-
