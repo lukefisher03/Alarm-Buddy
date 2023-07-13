@@ -54,6 +54,11 @@ void setup() {
         Serial.println("Sending script.js to client...");
         request->send(SPIFFS, "/script.js", "text/javascript");
     });
+
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Serial.println("Sending style.css to client...");
+        request->send(SPIFFS, "/style.css", "text/css");
+    });
     
     server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
         String hours_str;
