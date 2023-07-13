@@ -63,7 +63,7 @@ bool Clk::SetTime(int hours, int minutes, int seconds){
     seconds_ = seconds;
 
     return true;
-}
+};
 
 bool Clk::ValidateTime(int hours, int minutes, int seconds) {
     if (hours > 12 || minutes > 60 || seconds > 60) {
