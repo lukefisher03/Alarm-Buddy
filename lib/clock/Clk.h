@@ -19,11 +19,13 @@ class Clk{
         Clk(int h, int m, int s);
         void Tick();
         void Shift();
-        void UpdateTime();
+        bool SetTime(int, int, int);
+        bool ValidateTime(int, int, int);
         int* ChangeSelector();
         int InitiateIncrement();
         int SetIncrement();
-        std::string get_time();
+        std::string get_time_str();
+        const char* get_time_c_str();
         int* get_selector();
         int get_mode();
 };
