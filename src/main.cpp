@@ -3,7 +3,7 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
 
-#include "../lib/clock/Clk.h"
+#include "../lib/Clock/Clk.h"
 
 #define FORMAT_SPIFFS_IF_FAILED true
 #define OPEN_NETWORK true
